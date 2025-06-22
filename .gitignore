@@ -1,0 +1,56 @@
+# Binarios de Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Archivos de prueba
+*.test
+*.out
+
+# Archivos de cobertura
+*.cover
+
+# Archivos de Go
+go.work
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Credenciales (nunca subir a git)
+*.json
+!package.json
+!go.mod
+!go.sum
+
+# Docker
+.dockerignore
+
+# Jenkins
+.jenkins/
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local 
