@@ -61,6 +61,16 @@ if [ ! -f "Dockerfile" ]; then
     exit 1
 fi
 
+# Verificar que go.mod existe
+if [ ! -f "go.mod" ]; then
+    echo "❌ Error: go.mod no encontrado"
+    exit 1
+fi
+
+# Preparar dependencias de Go
+echo "📦 Preparando dependencias de Go..."
+go mod tidy
+
 # Autenticar con GCP Artifact Registry
 echo "🔐 Autenticando con GCP..."
 gcloud auth activate-service-account --key-file="$GCP_KEY_FILE"

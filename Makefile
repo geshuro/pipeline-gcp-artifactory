@@ -49,23 +49,34 @@ pipeline: ## Ejecutar el pipeline completo de CI/CD
 	$(MAKE) deploy
 	@echo "$(GREEN)✅ Pipeline completado exitosamente$(NC)"
 
+# Preparar dependencias de Go
+.PHONY: prepare-go
+prepare-go: ## Preparar dependencias de Go (generar go.sum)
+	@echo "$(BLUE)📦 Preparando dependencias de Go...$(NC)"
+	@if [ ! -f "go.mod" ]; then \
+		echo "$(RED)❌ Error: go.mod no encontrado$(NC)"; \
+		exit 1; \
+	fi
+	@go mod tidy
+	@echo "$(GREEN)✅ Dependencias de Go preparadas$(NC)"
+
 # Instalar dependencias
 .PHONY: install-deps
-install-deps: ## Instalar dependencias (gcloud, etc.)
+install-deps: prepare-go ## Instalar dependencias (gcloud, etc.)
 	@echo "$(BLUE)🔧 Instalando dependencias...$(NC)"
 	@chmod +x scripts/install-dependencies.sh
 	@GCP_PROJECT_ID=$(GCP_PROJECT_ID) ./scripts/install-dependencies.sh
 
 # Ejecutar pruebas
 .PHONY: test
-test: ## Ejecutar pruebas unitarias
+test: prepare-go ## Ejecutar pruebas unitarias
 	@echo "$(BLUE)🧪 Ejecutando pruebas...$(NC)"
 	@chmod +x scripts/run-tests.sh
 	@./scripts/run-tests.sh
 
 # Construir y subir imagen Docker
 .PHONY: build-docker
-build-docker: ## Construir y subir imagen Docker a Artifact Registry
+build-docker: prepare-go ## Construir y subir imagen Docker a Artifact Registry
 	@echo "$(BLUE)🐳 Construyendo y subiendo imagen Docker...$(NC)"
 	@chmod +x scripts/build-docker.sh
 	@GCP_PROJECT_ID=$(GCP_PROJECT_ID) \
@@ -104,20 +115,19 @@ deploy: ## Desplegar aplicación en Cloud Run
 
 # Desarrollo local
 .PHONY: dev
-dev: ## Ejecutar aplicación en modo desarrollo
+dev: prepare-go ## Ejecutar aplicación en modo desarrollo
 	@echo "$(BLUE)🛠️ Ejecutando aplicación en modo desarrollo...$(NC)"
-	@go mod tidy
 	@go run main.go
 
 # Ejecutar pruebas localmente
 .PHONY: test-local
-test-local: ## Ejecutar pruebas localmente
+test-local: prepare-go ## Ejecutar pruebas localmente
 	@echo "$(BLUE)🧪 Ejecutando pruebas localmente...$(NC)"
 	@go test -v ./...
 
 # Construir imagen Docker localmente
 .PHONY: build-local
-build-local: ## Construir imagen Docker localmente
+build-local: prepare-go ## Construir imagen Docker localmente
 	@echo "$(BLUE)🐳 Construyendo imagen Docker localmente...$(NC)"
 	@docker build -t $(APP_NAME):local .
 

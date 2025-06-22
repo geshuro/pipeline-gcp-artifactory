@@ -18,7 +18,7 @@ if [ ! -f "go.mod" ]; then
     exit 1
 fi
 
-# Instalar dependencias si es necesario
+# Instalar dependencias y generar go.sum si no existe
 echo "📦 Instalando dependencias de Go..."
 go mod tidy
 
